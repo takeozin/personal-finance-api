@@ -73,10 +73,20 @@ export const accountService = {
   }
 };
 
+// Category Service
+export const categoryService = {
+  getCategories: async () => {
+    const response = await apiClient.get('/categories');
+    return response.data;
+  }
+};
+
 // Transaction Service
 export const transactionService = {
-  getTransactions: async () => {
-    const response = await apiClient.get('/transactions');
+  getTransactions: async (startDate: string, endDate: string) => {
+    const response = await apiClient.get('/transactions', {
+      params: { startDate, endDate }
+    });
     return response.data;
   },
   createTransaction: async (data: any) => {
