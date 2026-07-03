@@ -1,0 +1,78 @@
+spring:
+  application:
+    name: personal-finance
+
+  # Perfil ativo - usar 'dev' para desenvolvimento local com H2
+  profiles:
+    active: dev
+
+  # Configuração JPA
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+
+---
+# Perfil de Desenvolvimento (H2 em memória)
+spring:
+  config:
+    activate:
+      on-profile: dev
+
+  datasource:
+    url: jdbc:h2:mem:financas_db
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+  jpa:
+    show-sql: true
+    database-platform: org.hibernate.dialect.H2Dialect
+
+# Configuração JWT
+app:
+  jwt:
+    secret: chave-secreta-muito-longa-para-desenvolvimento-local-substitua-em-producao-com-variavel-de-ambiente
+    expiration-ms: 86400000  # 24 horas
+
+server:
+  port: 8080
+
+# Configuração OpenAPI / Swagger
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operationsSorter: method
+
+---
+# Perfil de Produção (PostgreSQL)
+spring:
+  config:
+    activate:
+      on-profile: prod
+
+  datasource:
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/financas_db}
+    username: ${DATABASE_USER:postgres}
+    password: ${DATABASE_PASSWORD:postgres}
+
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: validate
+
+app:
+  jwt:
+    secret: ${JWT_SECRET}
+    expiration-ms: ${JWT_EXPIRATION:86400000}
